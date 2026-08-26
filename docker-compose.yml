@@ -1,0 +1,62 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: article_posts_backend
+    ports:
+      - "8030:8030"
+    environment:
+      - APP_PORT=8030
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=article-posts
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - article_posts_net
+
+  db:
+    image: mysql:8.0
+    container_name: article_posts_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=article-posts
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - article_posts_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: article_posts_phpmyadmin
+    restart: always
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=rootpassword
+    ports:
+      - "8081:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - article_posts_net
+
+networks:
+  article_posts_net:
+    driver: bridge
+
+volumes:
+  mysqldata:

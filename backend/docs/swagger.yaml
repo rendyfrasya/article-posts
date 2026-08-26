@@ -1,0 +1,331 @@
+basePath: /api/v1
+definitions:
+  model.Item:
+    properties:
+      category:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      sku:
+        type: string
+      unit:
+        type: string
+    required:
+    - category
+    - name
+    - sku
+    - unit
+    type: object
+  model.Stock:
+    properties:
+      id:
+        type: string
+      item_id:
+        type: string
+      item_name:
+        type: string
+      location_code:
+        type: string
+      location_id:
+        type: string
+      location_type:
+        type: string
+      location_zone:
+        type: string
+      qty:
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - item_id
+    - location_id
+    - qty
+    type: object
+  model.UpdateItemRequest:
+    properties:
+      category:
+        type: string
+      name:
+        type: string
+      sku:
+        type: string
+      unit:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      errors: {}
+      message:
+        type: string
+      meta: {}
+      success:
+        type: boolean
+    type: object
+host: localhost:8030
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API untuk mengelola item dan stok di gudang.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Warehouse Management API
+  version: "1.0"
+paths:
+  /items:
+    get:
+      description: Mengambil list item beserta data pagination dan filter pencarian
+      parameters:
+      - description: 'Nomor Halaman (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Jumlah Data per Halaman (default: 10)'
+        in: query
+        name: limit
+        type: integer
+      - description: Filter berdasarkan ID/Nama Kategori
+        in: query
+        name: category
+        type: string
+      - description: Pencarian berdasarkan Nama Item
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Items retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Item'
+                  type: array
+              type: object
+        "500":
+          description: Failed to fetch items
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Ambil Daftar Item
+      tags:
+      - Items
+    post:
+      consumes:
+      - application/json
+      description: Membuat dan menyimpan data item baru ke dalam database
+      parameters:
+      - description: Data item yang akan ditambahkan
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Item'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Item created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Item'
+              type: object
+        "400":
+          description: Validasi Input Gagal
+          schema:
+            $ref: '#/definitions/response.Response'
+        "409":
+          description: SKU already exists
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Tambah Item Baru
+      tags:
+      - Items
+  /items/{id}:
+    delete:
+      description: Menghapus data item (soft delete) berdasarkan ID
+      parameters:
+      - description: ID Item (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil menghapus item
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: ID item tidak boleh kosong
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Gagal menghapus item / Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Hapus Item
+      tags:
+      - Items
+    get:
+      description: Mengambil detail informasi satu item secara spesifik berdasarkan
+        ID
+      parameters:
+      - description: ID Item (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil detail item
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Item'
+              type: object
+        "400":
+          description: ID item tidak boleh kosong
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error / Data tidak ditemukan
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Ambil Detail Item
+      tags:
+      - Items
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data item yang sudah ada berdasarkan ID
+      parameters:
+      - description: ID Item (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data field item yang akan diupdate
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengupdate item
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Item'
+              type: object
+        "400":
+          description: Format request tidak valid / ID kosong
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update Data Item
+      tags:
+      - Items
+  /stock/{item_id}:
+    get:
+      description: Melihat penyebaran dan jumlah stok dari satu jenis barang di berbagai
+        lokasi/rak
+      parameters:
+      - description: ID Item (UUID)
+        in: path
+        name: item_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil rincian stock
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Stock'
+                  type: array
+              type: object
+        "400":
+          description: ID item tidak boleh kosong
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Ambil Rincian Stok per Item
+      tags:
+      - Stock
+  /stock/receive:
+    post:
+      consumes:
+      - application/json
+      description: Mencatat penambahan (inbound) stok barang ke lokasi tertentu di
+        gudang
+      parameters:
+      - description: Data penerimaan stok (item_id, location_id, qty)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Stock'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Stock received successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Stock'
+              type: object
+        "400":
+          description: Validasi Input Gagal
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Penerimaan Stok Masuk
+      tags:
+      - Stock
+swagger: "2.0"

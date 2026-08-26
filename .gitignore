@@ -1,0 +1,11 @@
+node_modules/
+vendor/
+bin/
+dist/
+build/
+*.exe
+.env
+logs/
+*.log
+.DS_Store
+Thumbs.db
