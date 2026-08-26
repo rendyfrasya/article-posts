@@ -50,7 +50,7 @@ npm run dev
 ---
 
 ## 📁 Struktur Direktori Proyek
-
+```plaintext
 root/
 ├── backend/
 │   ├── cmd/
@@ -73,3 +73,4 @@ root/
         ├── services/            # Konfigurasi Axios API client
         ├── types/               # TypeScript Interfaces (Article, ApiResponse)
         └── App.tsx              # Router & Layout Utama# article-posts
+```
