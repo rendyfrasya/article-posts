@@ -8,7 +8,11 @@ Aplikasi Content Management System (CMS) lengkap untuk manajemen artikel blog (A
 
 Pastikan sistemmu sudah terinstal Go (1.20+), Node.js (18+), dan Docker.
 
-### 1. Setup & Jalankan Backend (Go)
+### 1. Setup & Jalankan Docker
+
+docker compose up -d --build
+
+### 2. Setup & Jalankan Backend (Go)
 
 cd backend
 
@@ -18,7 +22,7 @@ docker exec -i article_posts_db mysql -uroot -prootpassword article-posts < migr
 
 go run cmd/main.go
 
-### 2. Setup & Jalankan Frontend (React/Vite)
+### 3. Setup & Jalankan Frontend (React/Vite)
 
 cd frontend
 
