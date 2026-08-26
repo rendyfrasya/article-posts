@@ -4,6 +4,23 @@ Aplikasi Content Management System (CMS) lengkap untuk manajemen artikel blog (A
 
 ---
 
+## 🛠️ Tech Stack
+
+### Backend (API)
+- **Language:** Go (Golang) 1.20+
+- **Web Framework:** Gin Web Framework
+- **Database:** MySQL (menggunakan `sqlx` untuk ekstensi standar `database/sql`)
+- **Architecture:** Clean Architecture / Domain-Driven Design (`Handler` -> `Service` -> `Repository`)
+
+### Frontend (UI)
+- **Framework:** React (via Vite)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Routing:** React Router v6
+- **Data Fetching:** TanStack Query (React Query)
+- **HTTP Client:** Axios
+
+
 ## 🚀 Panduan Instalasi & Menjalankan Aplikasi
 
 Pastikan sistemmu sudah terinstal Go (1.20+), Node.js (18+), dan Docker.
