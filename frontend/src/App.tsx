@@ -1,4 +1,3 @@
-import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Sidebar from './components/Sidebar';

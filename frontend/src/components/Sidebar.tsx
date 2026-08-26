@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
-  const [isManageUserOpen, setIsManageUserOpen] = useState<boolean>(false);
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path ? 'active' : '';
 
