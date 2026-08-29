@@ -47,6 +47,10 @@ const router = createBrowserRouter([
         path: '/article/:id',
         element: <EditArticle />, 
       },
+      {
+        path: '/article/edit/:id',
+        element: <EditArticle />, 
+      },
     ],
   },
 ]);
